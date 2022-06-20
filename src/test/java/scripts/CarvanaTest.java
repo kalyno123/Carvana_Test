@@ -134,7 +134,7 @@ public class CarvanaTest extends Base{
     5. Monthly Payment information - text should be displayed and should not be null
     6. Down Payment information - text should be displayed and should not be null
     7. Delivery chip must be displayed as “Free Shipping” and should not be null
-    NOTE: After completing all scripts, create an xml file called “test.xml” and make sure that you can run all scripts using “mvn test -Dsurefire.xmlSuiteFiles=test.xml”
+    NOTE: After completing all scripts, create an xml file called “Regression.xml” and make sure that you can run all scripts using “mvn test -Dsurefire.xmlSuiteFiles=Regression.xml”
     */
     @Test (priority = 6, description = "Validate the search result tiles")
     public void testSearchResultTiles(){
