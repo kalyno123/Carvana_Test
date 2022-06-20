@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="All Test Suite">
+    <test verbose="2" preserve-order="true" name="/Users/ngo/IdeaProjects/testng_third_project/src/test/java/scripts">
+        <classes>
+            <class name="scripts.CarvanaTest">
+                <methods>
+                    <include name="testHomePageTitle_URL"/>
+                    <include name="testCarvanaLogo"/>
+                    <include name="testMainNavigation"/>
+                    <include name="testSignInErrorMsg"/>
+                    <include name="testSearchFilter_Button"/>
+                    <include name="testSearchResultTiles"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+</suite>
