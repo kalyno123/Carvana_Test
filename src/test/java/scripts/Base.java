@@ -11,7 +11,7 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.asserts.SoftAssert;
 import pages.CarvanaHomePage;
 import pages.SearchCarsPage;
-import pages.SearchResultsPage;
+import untilities.ConfigReader;
 import untilities.Driver;
 
 import java.util.concurrent.TimeUnit;
@@ -25,22 +25,21 @@ public class Base {
     SoftAssert softAssert;
     Actions actions;
     JavascriptExecutor js;
-    CarvanaHomePage carvanaHomePage;
-    SearchCarsPage searchCarsPage;
-    SearchResultsPage searchResultsPage;
+    //CarvanaHomePage carvanaHomePage;
+    //SearchCarsPage searchCarsPage;
 
     @BeforeMethod (alwaysRun = true)
     // INITIALIZING OBJECTS VARIABLES
     public void setup(){
         driver = Driver.getDriver();
+        driver.get(ConfigReader.getProperty("url"));
         explicitWait = new WebDriverWait(driver, 10);
         fluentWait = new FluentWait(driver).withTimeout(30, TimeUnit.SECONDS).pollingEvery(2, TimeUnit.SECONDS).ignoring(Exception.class);
         softAssert = new SoftAssert();
         actions = new Actions(driver);
         js = (JavascriptExecutor) driver;
-        carvanaHomePage = new CarvanaHomePage(driver);
-        searchCarsPage = new SearchCarsPage(driver);
-        searchResultsPage = new SearchResultsPage(driver);
+        //carvanaHomePage = new CarvanaHomePage(driver);
+        //searchCarsPage = new SearchCarsPage(driver);
     }
 
     @AfterMethod (alwaysRun = true)

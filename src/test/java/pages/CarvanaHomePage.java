@@ -4,21 +4,24 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
+import untilities.Driver;
 
 import java.util.List;
 
 public class CarvanaHomePage {
 
-    public CarvanaHomePage(WebDriver driver){
+    /* public CarvanaHomePage(WebDriver driver){
         PageFactory.initElements(driver, this);
+    } */
+    public CarvanaHomePage(){
+        PageFactory.initElements(Driver.getDriver(), this);
     }
 
     @FindBy (css = "div[data-qa='logo-wrapper']")
     public WebElement carvanaLogo;
 
-    @FindBy (xpath = "//div[@data-qa='menu-wrapper']")
+    @FindBy (css = "div[data-qa='navigation-wrapper']>div>a")
     public List<WebElement> mainNavigationItems;
-    // technically this locator found 4 elements but only need elements at index 0-2; so need to initialize loop accordingly
 
     @FindBy (css = "a[data-cv-test='headerSignInLink']")
     public WebElement signInLink;
@@ -37,7 +40,5 @@ public class CarvanaHomePage {
 
     @FindBy (css = "a[data-cv-test='headerSearchLink']")
     public WebElement searchCarsLink;
-
-
 
 }

@@ -2,11 +2,24 @@ package scripts;
 
 import org.openqa.selenium.WebElement;
 import org.testng.Assert;
-import org.testng.annotations.Ignore;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
+import pages.CarvanaHomePage;
+import pages.SearchCarsPage;
+import untilities.ConfigReader;
+import untilities.ExpectedTexts;
 import untilities.Waiters;
 
 public class CarvanaTest extends Base{
+
+    CarvanaHomePage carvanaHomePage;
+    SearchCarsPage searchCarsPage;
+
+    @BeforeClass
+    public void setUpPages(){
+        carvanaHomePage = new CarvanaHomePage();
+        searchCarsPage = new SearchCarsPage();
+    }
 
     /* Test Case 1:
     Test name = Validate Carvana home page title and url
@@ -17,7 +30,7 @@ public class CarvanaTest extends Base{
     */
     @Test (priority = 1, description = "Validate Carvana home page title and url")
     public void testHomePageTitle_URL(){
-        driver.get("https://www.carvana.com/");
+        //driver.get("https://www.carvana.com/");
         Assert.assertEquals(driver.getTitle(),"Carvana | Buy & Finance Used Cars Online | At Home Delivery");
         Assert.assertEquals(driver.getCurrentUrl(),"https://www.carvana.com/");
     }
@@ -30,7 +43,7 @@ public class CarvanaTest extends Base{
     */
     @Test (priority = 2, description = "Validate the Carvana logo")
     public void testCarvanaLogo(){
-        driver.get("https://www.carvana.com/");
+        //driver.get("https://www.carvana.com/");
         Assert.assertTrue(carvanaHomePage.carvanaLogo.isDisplayed());
     }
 
@@ -45,12 +58,12 @@ public class CarvanaTest extends Base{
     */
     @Test (priority = 3, description = "Validate the main navigation section items")
     public void testMainNavigation(){
-        driver.get("https://www.carvana.com/");
-        //Waiters.pause(5);
-        String[] menuNavigationTexts = {"HOW IT WORKS", "ABOUT CARVANA", "SUPPORT & CONTACT"};
+        //driver.get("https://www.carvana.com/");
+        //String[] menuNavigationTexts = {"HOW IT WORKS", "ABOUT CARVANA", "SUPPORT & CONTACT"};
+        Waiters.waitForVisibilityOfElement(driver, carvanaHomePage.mainNavigationItems, 10);
         for (int i = 0; i < 3; i++){
-            softAssert.assertTrue(carvanaHomePage.mainNavigationItems.get(i).isDisplayed());
-            softAssert.assertEquals(carvanaHomePage.mainNavigationItems.get(i).getText(), menuNavigationTexts[i]);
+            Assert.assertTrue(carvanaHomePage.mainNavigationItems.get(i).isDisplayed());
+            Assert.assertEquals(carvanaHomePage.mainNavigationItems.get(i).getText(), ExpectedTexts.menuNavigationTexts[i]);
         }
     }
 
@@ -69,14 +82,14 @@ public class CarvanaTest extends Base{
     */
     @Test (priority = 4, description = "Validate the sign in error message")
     public void testSignInErrorMsg(){
-        driver.get("https://www.carvana.com/");
+        //driver.get("https://www.carvana.com/");
         carvanaHomePage.signInLink.click();
         //driver.switchTo()
         carvanaHomePage.emailInputBox.sendKeys("johndoe@gmail.com");
         carvanaHomePage.passwordInputBox.sendKeys("abcd1234");
         carvanaHomePage.signInButton.click();
-        softAssert.assertTrue(carvanaHomePage.signInErrorMsg.isDisplayed());
-        softAssert.assertEquals(carvanaHomePage.signInErrorMsg.getText(),
+        Assert.assertTrue(carvanaHomePage.signInErrorMsg.isDisplayed());
+        Assert.assertEquals(carvanaHomePage.signInErrorMsg.getText(),
                 "Email address and/or password combination is incorrect\nPlease try again or reset your password.");
     }
 
@@ -96,15 +109,15 @@ public class CarvanaTest extends Base{
     */
     @Test (priority = 5, description = "Validate the search filter options and search button")
     public void testSearchFilter_Button(){
-        driver.get("https://www.carvana.com/");
+        //driver.get("https://www.carvana.com/");
         Waiters.waitForVisibilityOfElement(driver, carvanaHomePage.searchCarsLink, 5);
         carvanaHomePage.searchCarsLink.click();
         Assert.assertEquals(driver.getCurrentUrl(), "https://www.carvana.com/cars");
         String[] filterOptionTexts = {"PAYMENT & PRICE", "MAKE & MODEL", "BODY TYPE", "YEAR & MILEAGE", "FEATURES", "MORE FILTERS"};
         int index = 0;
         for(WebElement option : searchCarsPage.filterOptions){
-            softAssert.assertTrue(option.isDisplayed());
-            softAssert.assertEquals(option.getText(), filterOptionTexts[index++]);
+            Assert.assertTrue(option.isDisplayed());
+            Assert.assertEquals(option.getText(), filterOptionTexts[index++]);
         }
     }
 
@@ -134,39 +147,43 @@ public class CarvanaTest extends Base{
     5. Monthly Payment information - text should be displayed and should not be null
     6. Down Payment information - text should be displayed and should not be null
     7. Delivery chip must be displayed as “Free Shipping” and should not be null
-    NOTE: After completing all scripts, create an xml file called “Regression.xml” and make sure that you can run all scripts using “mvn test -Dsurefire.xmlSuiteFiles=Regression.xml”
+    NOTE: After completing all scripts, create a xml file called “Regression.xml” and make sure that you can run all scripts using “mvn test -Dsurefire.xmlSuiteFiles=Regression.xml”
     */
     @Test (priority = 6, description = "Validate the search result tiles")
-    public void testSearchResultTiles(){
-        driver.get("https://www.carvana.com/");
-        Waiters.waitForVisibilityOfElement(driver, carvanaHomePage.searchCarsLink, 10);
+    public void testSearchResultTiles() {
         carvanaHomePage.searchCarsLink.click();
-        Assert.assertEquals(driver.getCurrentUrl(), "https://www.carvana.com/cars");
+        Assert.assertEquals(driver.getCurrentUrl(), ConfigReader.getProperty("url") + "cars");
         searchCarsPage.searchCarsInputBox.sendKeys("mercedes-benz");
         searchCarsPage.goButton.click();
-        Waiters.waitUntilTitleIs(driver,10,"mercedes-benz");
-        Assert.assertTrue(driver.getCurrentUrl().contains("mercedes-benz"));
-        for (int i = 0; i < 20; i++) {
-            Assert.assertTrue(searchResultsPage.tileImages.get(i).isDisplayed());
-            Assert.assertTrue(searchResultsPage.favoriteButtons.get(i).isDisplayed());
-            Assert.assertTrue(searchResultsPage.middleOfTileBody.get(i).isDisplayed());
-            Assert.assertTrue(searchResultsPage.bottomOfTileBody.get(i).isDisplayed());
 
-            Assert.assertTrue(searchResultsPage.inventoryType.get(i).isDisplayed() && searchResultsPage.inventoryType.get(i).getText() != null);
-            Assert.assertTrue(searchResultsPage.yearMakeModelResults.get(i).isDisplayed() && searchResultsPage.yearMakeModelResults.get(i).getText() != null);
-            Assert.assertTrue(searchResultsPage.trimMileageResults.get(i).isDisplayed() && searchResultsPage.trimMileageResults.get(i).getText() != null);
-            Assert.assertTrue(Integer.parseInt(searchResultsPage.carPrices.get(i).getText().replaceAll("[^\\d]","")) > 0);
-            Assert.assertTrue(searchResultsPage.carEstimateMonthlyPrices.get(i).isDisplayed() && searchResultsPage.carEstimateMonthlyPrices.get(i).getText() != null);
-            Assert.assertTrue(searchResultsPage.carDownPaymentPrices.get(i).isDisplayed() && searchResultsPage.carDownPaymentPrices.get(i).getText() != null);
-            Assert.assertTrue(searchResultsPage.deliveryResults.get(i).isDisplayed() && searchResultsPage.deliveryResults.get(i).getText() != null);
-        }
-
-        /*for (int i = 0; i < searchResultsPage.resultTiles.size(); i++){
-            if (i == 6 || i == 9 || i == 11 || i == 19 || i == 24) continue;
-            else {
-                softAssert.assertTrue(searchResultsPage.resultTiles.get(i).isDisplayed());
+        while (searchCarsPage.paginationNextButton.isEnabled()) {
+            Assert.assertTrue(driver.getCurrentUrl().contains("mercedes-benz"));
+            for (int i = 0; i < searchCarsPage.resultTiles.size(); i++) {
+                Assert.assertTrue(searchCarsPage.resultTiles.get(i).isDisplayed());
+                Assert.assertTrue(searchCarsPage.tileImages.get(i).isDisplayed());
+                Assert.assertTrue(searchCarsPage.favoriteButtons.get(i).isDisplayed());
+                Assert.assertTrue(searchCarsPage.inventoryType.get(i).isDisplayed());
+                Assert.assertFalse(searchCarsPage.inventoryType.get(i).getText().isEmpty());
+                Assert.assertNotNull(searchCarsPage.inventoryType.get(i).getText());
+                Assert.assertTrue(searchCarsPage.yearMakeModelResults.get(i).isDisplayed());
+                Assert.assertFalse(searchCarsPage.yearMakeModelResults.get(i).getText().isEmpty());
+                Assert.assertNotNull(searchCarsPage.yearMakeModelResults.get(i).getText());
+                Assert.assertTrue(searchCarsPage.trimMileageResults.get(i).isDisplayed());
+                Assert.assertFalse(searchCarsPage.trimMileageResults.get(i).getText().isEmpty());
+                Assert.assertNotNull(searchCarsPage.trimMileageResults.get(i).getText());
+                Assert.assertTrue(searchCarsPage.carPrices.get(i).isDisplayed());
+                Assert.assertTrue(Integer.parseInt(searchCarsPage.carPrices.get(i).getText().replaceAll("[^0-9]", "")) > 0);
+                Assert.assertTrue(searchCarsPage.carEstimateMonthlyPrices.get(i).isDisplayed());
+                Assert.assertFalse(searchCarsPage.carEstimateMonthlyPrices.get(i).getText().isEmpty());
+                Assert.assertNotNull(searchCarsPage.carEstimateMonthlyPrices.get(i).getText());
+                Assert.assertTrue(searchCarsPage.carDownPaymentPrices.get(i).isDisplayed());
+                Assert.assertFalse(searchCarsPage.carDownPaymentPrices.get(i).getText().isEmpty());
+                Assert.assertNotNull(searchCarsPage.carDownPaymentPrices.get(i).getText());
+                Assert.assertTrue(searchCarsPage.deliveryResults.get(i).isDisplayed());
+                Assert.assertFalse(searchCarsPage.deliveryResults.get(i).getText().isEmpty());
+                Assert.assertNotNull(searchCarsPage.deliveryResults.get(i).getText());
             }
-        }*/
+            searchCarsPage.paginationNextButton.click();
+        }
     }
-
 }
